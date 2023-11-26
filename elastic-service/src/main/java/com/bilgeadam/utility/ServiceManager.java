@@ -14,7 +14,7 @@ import java.util.Optional;
 @Getter
 public class ServiceManager<T extends BaseEntity, ID> implements IService<T, ID> {
 
-    private final ElasticsearchRepository<T, ID> repository;
+    private final ElasticsearchRepository <T, ID> repository;
 
     @Override
     public T save(T t) {
