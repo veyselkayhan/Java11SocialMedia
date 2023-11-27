@@ -6,5 +6,6 @@ buildscript {
 
 dependencies {
     implementation libs.springBootElasticSearch
+    implementation libs.springBootRabbitMq
 
 }

@@ -1,4 +1,4 @@
-package com.bilgeadam.config.redis.rabbitmq;
+package com.bilgeadam.config.rabbitmq;
 
 
 
@@ -14,13 +14,13 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMqConfig {
 
 
-
-    @Value("${rabbitmq-queue-register}")
-    private String queueNameRegister;
-
+    @Value("${rabbitmq.queue-register-elastic}")
+    private String elasticRegisterQueue;
     @Bean
-    public Queue registerQueue(){
-        return new Queue(queueNameRegister);
+    public Queue elasticRegisterQueue(){
+        return new Queue(elasticRegisterQueue);
     }
+
+
 
 }

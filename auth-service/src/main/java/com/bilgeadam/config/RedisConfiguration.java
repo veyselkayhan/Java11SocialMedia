@@ -1,4 +1,4 @@
-package com.bilgeadam.config.redis;
+package com.bilgeadam.config;
 
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
