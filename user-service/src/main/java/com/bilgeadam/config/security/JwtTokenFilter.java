@@ -1,7 +1,7 @@
 package com.bilgeadam.config.security;
 
-import com.bilgeadam.exception.AuthManagerException;
 import com.bilgeadam.exception.ErrorType;
+import com.bilgeadam.exception.UserManagerException;
 import com.bilgeadam.utility.JwtTokenManager;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,27 +18,30 @@ import java.util.Optional;
 
 public class JwtTokenFilter extends OncePerRequestFilter {
     @Autowired
-    private JwtTokenManager jwttokenManager;
+    JwtTokenManager jwttokenManager;
     @Autowired
-    private JwtUserDetails jwtuserDetails;
+    JwtUserDetails jwtUserDetails;
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        final String authorizationHeader = request.getHeader("authorization");
-        System.out.println("=>>>" + authorizationHeader);
-        if(authorizationHeader!=null && authorizationHeader.startsWith("Bearer ")){
-            String token = authorizationHeader.substring(7);
-            Optional<Long> id = jwttokenManager.getIdFromToken(token);
-            if(id.isPresent()){
-                UserDetails userDetails = jwtuserDetails.loadUserById(id.get());
-                UsernamePasswordAuthenticationToken authenticationToken=
-                        new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+
+    final String authHeader = request.getHeader("Authorization");
+        System.out.println("=>>>"+authHeader);
+        if(authHeader!=null&&authHeader.startsWith("Bearer ")){
+            String token = authHeader.substring(7);
+            Optional<String> userRole = jwttokenManager.getRoleFromToken(token);
+            if(jwttokenManager.validateToken(token));
+
+            if(jwttokenManager.validateToken(token)){
+                UserDetails userDetails= jwtUserDetails.loadUserByRole(userRole.get());
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }else {
-                throw new AuthManagerException(ErrorType.INVALID_TOKEN);
+                throw new UserManagerException((ErrorType.INVALID_TOKEN));
             }
         }
+        filterChain.doFilter(request,response);
 
-        filterChain.doFilter(request, response);
     }
 }

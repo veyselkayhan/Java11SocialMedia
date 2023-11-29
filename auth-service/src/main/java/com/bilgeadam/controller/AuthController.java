@@ -15,6 +15,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import static com.bilgeadam.constants.RestApi.*;
 
@@ -50,6 +51,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.activateStatus(dto));
     }
 
+    @PreAuthorize("hasAnyAuthority('USER')")
     @GetMapping(FINDALL)
     public ResponseEntity<List<Auth>> findAll(){
         return ResponseEntity.ok(authService.findAll());
@@ -119,6 +121,7 @@ public class AuthController {
             return false;
         }
     }
+
 
     @GetMapping(FINDBYROLE)
     public ResponseEntity<List<Long>> findByRole(@RequestParam String role){
